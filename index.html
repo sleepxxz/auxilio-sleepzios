@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Login - Painel Sleepz</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+  .login-box {
+    width: 300px;
+    background: #111;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    padding: 25px;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  .login-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #eee;
+  }
+  .login-box input {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    color: #fff;
+  }
+  .login-box button {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .error {
+    text-align: center;
+    color: red;
+    margin-bottom: 10px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="login-box">
+  <h2>Login</h2>
+  <div class="error" id="errorMsg">Usuário ou senha incorretos</div>
+  <input type="text" id="username" placeholder="Usuário">
+  <input type="password" id="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<script>
+const canvas = document.getElementById('bg'), ctx = canvas.getContext('2d');
+canvas.width = innerWidth; canvas.height = innerHeight;
+let particles = [];
+for (let i = 0; i < 60; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 1,
+    vy: (Math.random() - 0.5) * 1
+  });
+}
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < particles.length; i++) {
+    let p = particles[i];
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 2, 0, 2 * Math.PI);
+    ctx.fillStyle = '#bbb';
+    ctx.fill();
+    for (let j = i + 1; j < particles.length; j++) {
+      let q = particles[j], dx = p.x - q.x, dy = p.y - q.y;
+      if (Math.sqrt(dx * dx + dy * dy) < 90) {
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(q.x, q.y);
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const errorMsg = document.getElementById("errorMsg");
+  if (user === "sleepz" && pass === "7789") {
+    window.location.href = "painel.html";
+  } else {
+    errorMsg.style.display = "block";
+  }
+}
+</script>
+</body>
+</html>
